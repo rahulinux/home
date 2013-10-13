@@ -1,0 +1,147 @@
+viw == select entire word
+vaw == select word with end space
+
+diw = delect entire word
+daw = delete entire word with end space
+
+yaw == yank entire word
+
+vip = select paragraph
+vap = select paragraph with whitepace 
+
+s  = sentence 
+
+das = delete entire sentence 
+gUis = make sentence Upper case 
+guis = make sentence all in non caps 
+
+select in ( { " '
+vi" = select word in doulbe qoutes 
+vi' = select word in single qoutes 
+vi{ = select word in brace or vi} or viB 
+vi( = select word in paranthesis or vib
+
+change in { [ ( " '
+ci" = change word in doulbe qoutes 
+ci' = change word in single qoutes 
+ci{ = change word in brace
+ci( = change word in paranthesis
+
+HTML
+vit = select word in tag <p></p>
+
+# auto command .vimrc
+syntax on
+filetype indent on 
+set smartindent
+
+autocmd BufRead,BufWritePre *.sh normal gg=G
+
+# for more autocmd
+help autocmd-events
+
+# to check file type
+:set ft?
+
+# create own keyboard shortcut
+# to comment line in shell script by using keyboad shortcut
+autocmd Filietype sh nnoremap <buffer> <leader>c I#<esc>
+# <leader> means key "\"
+# nnoremap means 
+# <buffer> # only for sh file not for other file mapping
+# buffer means keep this mapping don't overwrite other map
+# map key 
+
+# tocomment html file
+autocmd Filetype html nnoremap <leader>c I<!--<esc>A--><esc>
+
+# wrap lines
+set wrap
+
+# setlocal only for current session
+
+# we can set multiple settings using single command
+
+set bg=dark nu wrap smartindent
+
+# scroll settings
+set scrolloff=5
+
+# disable msg
+set noshowmode
+# 
+set wildmode
+
+# to on curserline
+set cursorline
+
+# turn on undofile # it will create .un~ file 
+# to enable undo in path opening file
+set undofile 
+
+# enable g flash
+set gdefault
+
+# vim registerss
+to view all registers value
+:reg
+when you delete anything then it's store in reg zero 0 and "" double qoutes 
+# I can store into different registers
+"add  # delete line and put it on reg a
+"ap	  # paste line from reg a
+
+# to wrap line seperated by space instead of wordbreak
+set linebreak
+
+# saveas file
+:saveas file2
+
+# disable arrow keys
+nnoremap <left> <nop>
+nnoremap <right> <nop>
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+
+# Source current file
+so %
+# basics of mapping
+nmap x dd # it means use x key for dd means delete current line 
+# but it will overwrite x command 
+# to check all map
+:map
+# to do not lost/overwrite command we use nnoremap
+# it means ignore any other mapping
+
+# to remove mapping
+unmap x
+
+# we use ' ci( ' change inside parenthesis 
+# we can map this to shortcut 
+" change inside parenthesis ( shortcut of ci( )
+" then we can use "cp" to change inside paranthesis
+onoremap p i(    
+
+" to highlight search
+set hlsearch
+set incsearch
+
+" to Open Man Pages
+" cursor should be word which you want to check man pages
+Shift + k
+
+" join two seperate line into single line
+Shift + j
+
+" to move cursor in paragraph
+gj # to move down
+gk # move up
+0  # zero for begening of the line
+$  # to end of line
+
+:h K # to check help in vim about keywork K
+
+gf # Open file which your cursor is.
+
+zz # take current line at middle window to show only
+
+o  # end and start of selection in visual selection mode in Ctrl + v , to extend selection
