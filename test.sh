@@ -1,13 +1,18 @@
 Checking() {
-	echo "$(tput setaf 3 ; tput bold )"${@}" $(tput sgr 0)"
+    msg="${@}"
+    char=${#msg}
+    col_size=$(( $(tput cols) - 50))
+    col=$(( col_size - char))
+	printf '%s%*s%s\n' $(tput setaf 3 ; tput bold )"${@}" $col "[  checks ]"
+    tput sgr 0
 }
 
 OK() {
 	msg="${@}"
 	char=${#msg}
-	col_size=$(tput cols)
+	col_size=$(( $(tput cols) - 50))
 	col=$(( col_size - char))
-	printf '%s%*s%s\n' $(tput bold )"${@}" $col "[success]"
+	printf '%s%*s%s\n' $(tput bold )"${@}" $col "[ success ]"
 	tput sgr 0
 }
 
@@ -32,35 +37,43 @@ ReadOnly() {
 
 }
 
+ChecknAdd() {
+    local input_string=${1}
+    local config_file=${2}
+    local grep_search_pattern="$(echo "${input_string}" |\
+                                sed -ne 's/\(\S*\) \([A-Za-z0-9.]*\)/^[ ^\\t]*\1*[ ^\\t]*\2/p' )" 
+    local sed_pattern_1=$(  echo "${input_string}" |\
+                            sed -ne 's/\(\S*\) \([A-Za-z0-9.]*\)/ \"\s\/\\(^\\s*\1\\s*[.0-9]*\\\)\/# \
+                            \\1\\n\1 \2\\n\/\"/p')
+    local sed_patter_2=$( echo $input_string |\
+                          sed -ne 's/\(\S*\) \([A-Za-z0-9.]*\)/\"1\,\/\1\/\{s\/\\(\^\\s*#\\s*\1\\s* \
+                          [,.0-9]*\\\)\/\\1 \\n\1 \2\\n\/\}" /p')
+
+   if grep -q -P "${grep_search_pattern}" $config_file ; then
+        echo "Option ${input_string} Already Configured"
+   else
+        OK "Option ${input_string} Updating...."
+        echo sed -i.bkp-$(date +%F) $sed_pattern_1 $config_file | sh
+
+        if ! grep -q -P "${grep_search_pattern}" $config_file ; then
+           echo sed -i.bkp-$(date +%F) ${sed_patter_2} $config_file | sh
+           OK 'Done'
+        fi
+    fi
+
+}
+
+
 SSH_Security_check() {
 	SSHD_Conf="/etc/ssh/sshd_config"
 	Checking "Checking SSH Protocol Version"
 	ReadOnly off $SSHD_Conf
-	if grep -q -P "^[\s]*Protocol[\s]*2" "${SSHD_Conf}"; then
-		OK "SSH Protocol Version is OK"
-	else
-		OK "Updateing Protocol Version..."
-		sed -i.bkp-$(date +%F) 's/\(^\s*Protocol\s*[.0-9]*\)/# \1 \nProtocol 2\n/' ${SSHD_Conf}
 
-		if ! grep -q -P "^[\s]*Protocol[\s]*2" "${SSHD_Conf}"; then
-			sed -i.bkp-$(date +%F)  '1,/Protocol/{s/\(^\s*#\s*Protocol\s*[.,0-9]*\)/\1 \nProtocol 2\n/}' ${SSHD_Conf}
-		fi
-		OK "Done"
-	fi	
+    ChecknAdd "Protocol 2" $SSHD_Conf	
 	#ReadOnly on $SSHD_Conf
 
-	Checking "Checking SyslogFacylity Check" 
-	if grep -q  -P "^[\s]*SyslogFacility[\s]*AUTHPRIV" ${SSHD_Conf}; then
-		OK "SyslogFacylity is AUTHPRIVE"
-	else
-		OK "Updating SyslogFacylity"	
-		sed -i.bkp-$(date +%F)   '1,/SyslogFacility/{s/\(^\s*SyslogFacility\s*[A-Za-z.,]*\)/#\1 \nSyslogFacility AUTHPRIV \n/}'  ${SSHD_Conf}
-		OK "Done"
-		if ! grep -q  -P "^[\s]*SyslogFacility[\s]*AUTHPRIV" ${SSHD_Conf}; then
-			sed -i.bkp-$(date +%F)   '1,/SyslogFacility/{s/\(^\s*#\s*SyslogFacility\s*[A-Za-z.,]*\)/\1 \nSyslogFacility AUTHPRIV \n/}'  ${SSHD_Conf}
-			OK "Done"	
-		fi
-	fi	
+	Checking "Checking SyslogFacylity Check"
+    ChecknAdd "SyslogFacility AUTHPRIV" $SSHD_Conf
 }
 
 Show_menu
