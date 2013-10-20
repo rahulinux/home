@@ -238,13 +238,25 @@ Kernel_Tuning() {
 		search_pattern=$( echo "${values}" |\
 			 sed -ne 's/\(\S*\) \(=\) \([A-Za-z0-9.]*\)/^[ ^\\t]*\1*[ ^\\t]*\2\*[ ^\\t]*/p' )
 		if grep -qP "${search_pattern}" $Conf; then
+            
+        # the value adding check already exists or not 
+        exist_or_not=$( echo "{values}" |\
+                        sed -ne 's/\(\S*\) \(=\) \([A-Za-z0-9.]*\)/^[ ^\\t]*\1*[ ^\\t]*\2\*[ ^\\t]*\3/p')
+
+            if grep -qP "${exist_or_not}" $Conf; then
+                Exists "$values" 
+                continue
+            else
+
 			# if exists then comment old and add new
 			sed_pattern=$( echo "${values}" |\
 		 sed -ne 's/\(\S*\) \([A-Za-z0-9.\\\/=]*\) \([0-9]*\)/ \"\s\/\\(^\\s*\1\\s*[.0-9A-Za-z\\\/=]\\s*[.0-9A-Za-z\/]*\\\)\/# \\1\\n\1 \2 \3\/\"/p'	)
 			echo sed -i ${sed_pattern} $Conf | sh
-			
+		    OK "${values}"
+            fi
 		else
 			echo "${values}" >> $Conf
+		    OK "${values}"	
 		fi
 
 	done < "${Tmp_params}"
