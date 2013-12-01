@@ -1,0 +1,32 @@
+Script started on Sunday 01 December 2013 01:53:21 PM IST
+root@dc:~# fdisk /dev/sda
+
+Command (m for help): p
+
+Disk /dev/sda: 293.6 GB, 293628542976 bytes
+128 heads, 32 sectors/track, 140013 cylinders, total 573493248 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x00005f9d
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048      999423      498688   83  Linux
+/dev/sda2          999424    98656255    48828416   83  Linux
+/dev/sda3        98656256   118188031     9765888   83  Linux
+/dev/sda4       118190078   315455487    98632705    5  Extended
+/dev/sda5       118190080   215844863    48827392   83  Linux
+/dev/sda6       215846912   217798655      975872   83  Linux
+/dev/sda7       217800704   315455487    48827392   83  Linux
+
+Command (m for help): n
+All primary partitions are in use
+Adding logical partition 8
+No free sectors available
+
+Command (m for help): quit
+
+root@dc:~# exit
+exit
+
+Script done on Sunday 01 December 2013 01:53:35 PM IST
