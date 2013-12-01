@@ -1,0 +1,24 @@
+sudo apt-get install likewise-open5
+ sudo domainjoin-cli join clickgroup administrator 
+ quuit
+ exit
+ sudo domainjoin-cli join CLICKGROUP.COM  administrator 
+ sudo nano /etc/samba/lwiauthd.conf
+ sudo reboot
+ sudo nano /etc/samba/lwiauthd.conf
+ sudo nano /etc/sudoers
+Aclick@click-d-95:~$ cat /etc/samba/lwiauthd.conf
+winbind use default domain = yes
+click@click-d-95:~$ cat /etc/lightdm/lightdm.conf
+
+[SeatDefaults]
+greeter-session=unity-greeter
+user-session=ubuntu
+greeter-show-manual-login=true
+ 
+
+in sudors files 
+%domaina\\domain^admins ALL=(ALL) ALL
+
+
+sudo nano  /etc/lightdm/lightdm.conf
