@@ -1,0 +1,49 @@
+# Clone Master Repo:
+mkdir /path/to/your/project
+cd /path/to/your/project
+git init
+git remote add origin https://username@bitbucket.org/group/repo.git
+git pull origin master
+ 
+# Setup Global Configs
+git config --global user.name "User Name"
+git config --global user.emal "email@email.com"
+ 
+# Make changes and push
+echo "# This is my README" >> README.md
+git add README.md
+git commit -am "First Commit. Adding a README."
+git push -u origin master
+ 
+# Push your whole folder to Master
+# *Note only needs to this once to setup the repo*
+git commit -m "Adding all files to repo"
+git add .  <-- there is a dot at the end
+git push
+ 
+# Create Branch and Switch to it
+git checkout -b branchname
+ 
+# Switch back to Master or which branch
+git checkout master
+git checkout somebranch_I_used_before
+ 
+# Edit a File and Commit Changes
+git commit -a -m 'added a new footer [issue 53]'
+ 
+# Merge Branch into Master
+git checkout master
+git merge branchname
+ 
+# Delete a branch
+git branch -d branchname
+git branch rm branchname
+ 
+# See what's been changed
+git status
+ 
+#  bunch of crap got updated somehow and I know I'm up to date with master but git says otherwise
+git checkout -f
+ 
+# Color code the git UI on the linux box
+git config --global color.ui true
