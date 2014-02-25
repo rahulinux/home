@@ -1,0 +1,61 @@
+#! /bin/bash
+#
+# ntp Bring up/down ntp service
+#
+#chkconfig: - 99 30
+#description: Bring up/down ntp
+#
+### BEGIN INIT INFO
+# Provides:
+# Should-Start:
+# Short-Description: Bring up/down ntp
+# Description: Bring up/down ntp
+### END INIT INFO
+# Source function library.
+. /etc/init.d/functions
+
+CWD=$(pwd)
+NTPD=/usr/local/bin/ntpd
+prog="ntp"
+
+start() {
+# Attach irda device
+        echo -n $"Starting $prog: "
+        $NTPD -p /var/run/ntpd.pid
+        sleep 2
+        if ps ax | grep -v "grep" | grep -q $NTPD ; then 
+			success $"ntp startup"; 
+		else 
+			failure $"ntp startup"; 
+		fi
+        echo
+}
+stop() {
+# Stop service.
+        echo -n $"Shutting down $prog: "
+        kill -9 `cat /var/run/ntpd.pid` > /dev/null 2>&1
+        sleep 2
+        if ps ax | grep -v "grep" | grep -q $NTPD ; then 
+			failure $"ntp shutdown"; 
+		else 
+			success $"ntp shutdown"; 
+		fi
+        echo
+}
+# See how we were called.
+case "$1" in
+        start)
+        start
+        ;;
+        stop)
+        stop
+        ;;
+        restart|reload)
+        stop
+        start
+        ;;
+        *)
+        echo $"Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+exit 0
