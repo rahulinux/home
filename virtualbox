@@ -1,0 +1,9 @@
+# Add Port forward 
+VBoxManage modifyvm "centos8" --natpf1 "guestssh,tcp,127.0.0.1,2222,,22"
+
+# Start Vm
+VBoxManage startvm centos8 --type headless
+
+# Stop Vm
+VBoxManage controlvm centos8 poweroff
+
